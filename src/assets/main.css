@@ -1,0 +1,12 @@
+@import url('./base.css');
+
+#app {
+  display: block;
+  font-weight: normal;
+  height: auto;
+  margin: 0 auto;
+  max-width: calc(1200px + 4rem);
+  min-height: 100vh;
+  padding: 2rem;
+  width: 100%;
+}

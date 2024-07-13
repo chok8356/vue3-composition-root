@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`UsersList.vue > fetches users list and displays them correctly 1`] = `
+"<div class="users">
+  <router-link-stub to="[object Object]" replace="false" custom="false" ariacurrentvalue="page" class="user" data-test="user">John Doe</router-link-stub>
+  <router-link-stub to="[object Object]" replace="false" custom="false" ariacurrentvalue="page" class="user" data-test="user">Jane Doe</router-link-stub>
+</div>"
+`;
