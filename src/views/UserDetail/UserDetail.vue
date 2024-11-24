@@ -26,6 +26,7 @@
           <UserDetailAlbumPhotos
             :album-id="albumId"
             :available-album-ids="availableAlbumIds"
+            :deps="deps.UserDetailAlbumPhotos"
             @close="onCloseAlbum" />
         </div>
       </div>
@@ -39,23 +40,24 @@
 </template>
 
 <script setup lang="ts">
-import type { IUserAlbum } from '@/views/UserDetail/types/IUserAlbum'
-import type { IUserDetailInfo } from '@/views/UserDetail/types/IUserDetailInfo'
+import type { UserDetailDeps } from '@/views/UserDetail/UserDetailDeps'
 
-import { useInjected } from '@/use/useInjected'
-import UserDetailAlbumPhotos from '@/views/UserDetail/components/UserDetailAlbumPhotos/UserDetailAlbumPhotos.vue'
-import UserDetailAlbums from '@/views/UserDetail/components/UserDetailAlbums/UserDetailAlbums.vue'
-import UserDetailInfo from '@/views/UserDetail/components/UserDetailInfo/UserDetailInfo.vue'
-import { getUserAlbumsInjectionKey } from '@/views/UserDetail/ports/GetUserAlbumsDelegate'
-import { getUserInjectionKey } from '@/views/UserDetail/ports/GetUserDelegate'
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+
+import type { IUserAlbum } from './types/IUserAlbum'
+import type { IUserDetailInfo } from './types/IUserDetailInfo'
+
+import UserDetailAlbumPhotos from './components/UserDetailAlbumPhotos/UserDetailAlbumPhotos.vue'
+import UserDetailAlbums from './components/UserDetailAlbums/UserDetailAlbums.vue'
+import UserDetailInfo from './components/UserDetailInfo/UserDetailInfo.vue'
 
 const router = useRouter()
 
 const props = withDefaults(
   defineProps<{
     albumId: null | number
+    deps: UserDetailDeps
     userId: null | number
   }>(),
   {
@@ -67,24 +69,35 @@ const props = withDefaults(
 const loading = ref(true)
 
 // User
-const getUser = useInjected(getUserInjectionKey)
 
 const user = ref<IUserDetailInfo | null>(null)
 
 const fetchUser = async () => {
   if (props.userId !== null) {
-    user.value = await getUser(props.userId)
+    await props.deps.getUserDetailInfo(props.userId).then((data) => {
+      data.match({
+        err: async () => {},
+        ok: async (x) => {
+          user.value = x
+        },
+      })
+    })
   }
 }
 
 // Album
-const getUserAlbums = useInjected(getUserAlbumsInjectionKey)
-
 const albums = ref<IUserAlbum[]>([])
 
 const fetchAlbums = async () => {
   if (props.userId !== null) {
-    albums.value = await getUserAlbums(props.userId)
+    await props.deps.getUserAlbums(props.userId).then((data) => {
+      data.match({
+        err: async () => {},
+        ok: async (x) => {
+          albums.value = x
+        },
+      })
+    })
   }
 }
 

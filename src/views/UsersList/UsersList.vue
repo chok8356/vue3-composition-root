@@ -1,5 +1,6 @@
 <template>
   <div :class="$style.users">
+    <div v-if="error">{{ error }}</div>
     <RouterLink
       v-for="user in users"
       :key="user.id"
@@ -12,19 +13,32 @@
 </template>
 
 <script setup lang="ts">
-import type { IUserList } from '@/views/UsersList/types/IUserList'
+import type { UsersListDeps } from '@/views/UsersList/UsersListDeps'
 
-import { useInjected } from '@/use/useInjected'
-import { getUsersInjectionKey } from '@/views/UsersList/ports/GetUsersDelegate'
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
-const users = ref<IUserList[]>([])
+import type { IUser } from './types/IUser'
 
-const getUsers = useInjected(getUsersInjectionKey)
+const props = defineProps<{
+  deps: UsersListDeps
+}>()
+
+const users = ref<IUser[]>([])
+
+const error = ref('')
 
 onMounted(async () => {
-  users.value = await getUsers()
+  await props.deps.getUsers().then((data) => {
+    data.match({
+      err: async (x) => {
+        error.value = x
+      },
+      ok: async (x) => {
+        users.value = x
+      },
+    })
+  })
 })
 </script>
 

@@ -23,10 +23,9 @@ export default defineConfig((configEnv) =>
           classNameStrategy: 'non-scoped',
         },
       },
-
       environment: 'jsdom',
       globals: true,
-      include: ['**/__tests__/*.spec.ts'],
+      include: ['./src/**/*.spec.ts'],
       root: fileURLToPath(new URL('./', import.meta.url)),
       setupFiles: ['./vitest.setup.ts'],
       watch: false,

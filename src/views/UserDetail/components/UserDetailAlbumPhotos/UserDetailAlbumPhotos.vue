@@ -44,18 +44,19 @@
 </template>
 
 <script setup lang="ts">
-import type { IAlbumPhoto } from '@/views/UserDetail/components/UserDetailAlbumPhotos/types/IAlbumPhoto'
+import type { UserDetailAlbumPhotosDeps } from '@/views/UserDetail/components/UserDetailAlbumPhotos/UserDetailAlbumPhotosDeps'
 import type { IUserAlbum } from '@/views/UserDetail/types/IUserAlbum'
 
 import Button from '@/components/core/Button.vue'
-import { useInjected } from '@/use/useInjected'
-import { getAlbumPhotosInjectionKey } from '@/views/UserDetail/components/UserDetailAlbumPhotos/ports/GetAlbumPhotosDelegate'
 import { ref, watch } from 'vue'
+
+import type { IAlbumPhoto } from './types/IAlbumPhoto'
 
 const props = withDefaults(
   defineProps<{
     albumId: null | number
     availableAlbumIds: IUserAlbum['id'][]
+    deps: UserDetailAlbumPhotosDeps
   }>(),
   {
     albumId: null,
@@ -67,8 +68,6 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const getAlbumPhotos = useInjected(getAlbumPhotosInjectionKey)
-
 const loadingPhotos = ref(true)
 const photos = ref<IAlbumPhoto[]>([])
 const page = ref(1)
@@ -76,7 +75,14 @@ const page = ref(1)
 const fetchAlbumData = async () => {
   if (props.albumId !== null && props.availableAlbumIds.includes(props.albumId)) {
     loadingPhotos.value = true
-    photos.value = await getAlbumPhotos(props.albumId, page.value)
+    await props.deps.getAlbumPhotos(props.albumId, page.value).then((data) => {
+      data.match({
+        err: async () => {},
+        ok: async (x) => {
+          photos.value = x
+        },
+      })
+    })
     loadingPhotos.value = false
   }
 }
@@ -87,7 +93,14 @@ const fetchAlbumDataMore = async () => {
   if (props.albumId !== null && !loadingPhotosMore.value) {
     loadingPhotosMore.value = true
     page.value += 1
-    photos.value = photos.value.concat(await getAlbumPhotos(props.albumId, page.value))
+    await props.deps.getAlbumPhotos(props.albumId, page.value).then((data) => {
+      data.match({
+        err: async () => {},
+        ok: async (x) => {
+          photos.value = photos.value.concat(x)
+        },
+      })
+    })
     loadingPhotosMore.value = false
   }
 }
