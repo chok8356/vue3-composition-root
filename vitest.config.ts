@@ -3,8 +3,8 @@ import { defineConfig, mergeConfig } from 'vitest/config'
 
 import viteConfig from './vite.config'
 
-export default defineConfig((configEnv) =>
-  mergeConfig(viteConfig(configEnv), {
+export default defineConfig((configEnvironment) =>
+  mergeConfig(viteConfig(configEnvironment), {
     test: {
       clearMocks: true,
       coverage: {

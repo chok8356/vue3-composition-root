@@ -1,6 +1,6 @@
 import type { UserDetailDeps } from '@/views/UserDetail/UserDetailDeps'
 
-import { Ok } from '@thames/monads'
+import { Err, Ok } from '@thames/monads'
 import { flushPromises, shallowMount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -36,14 +36,14 @@ describe('UserDetail.vue', () => {
   it('request on mounted', () => {
     const deps: UserDetailDeps = {
       getUserAlbums: vi.fn().mockResolvedValue(Ok([])),
-      getUserDetailInfo: vi.fn().mockResolvedValue(Ok(null)),
+      getUserDetailInfo: vi.fn().mockResolvedValue(Ok(user)),
       UserDetailAlbumPhotos: {
         getAlbumPhotos: vi.fn().mockResolvedValue(Ok([])),
       },
     }
     shallowMount(UserDetail, {
       props: {
-        albumId: null,
+        albumId: undefined,
         deps,
         userId: user.id,
       },
@@ -57,14 +57,14 @@ describe('UserDetail.vue', () => {
   it('renders loading state correctly', () => {
     const deps: UserDetailDeps = {
       getUserAlbums: vi.fn().mockResolvedValue(Ok([])),
-      getUserDetailInfo: vi.fn().mockResolvedValue(Ok(null)),
+      getUserDetailInfo: vi.fn().mockResolvedValue(Ok(user)),
       UserDetailAlbumPhotos: {
         getAlbumPhotos: vi.fn().mockResolvedValue(Ok([])),
       },
     }
     const wrapper = shallowMount(UserDetail, {
       props: {
-        albumId: null,
+        albumId: undefined,
         deps,
         userId: user.id,
       },
@@ -83,7 +83,7 @@ describe('UserDetail.vue', () => {
     }
     const wrapper = shallowMount(UserDetail, {
       props: {
-        albumId: null,
+        albumId: undefined,
         deps,
         userId: user.id,
       },
@@ -99,14 +99,14 @@ describe('UserDetail.vue', () => {
   it('renders "No info" message when no user data is available', async () => {
     const deps: UserDetailDeps = {
       getUserAlbums: vi.fn().mockResolvedValue(Ok([])),
-      getUserDetailInfo: vi.fn().mockResolvedValue(Ok(null)),
+      getUserDetailInfo: vi.fn().mockResolvedValue(Err('error')),
       UserDetailAlbumPhotos: {
         getAlbumPhotos: vi.fn().mockResolvedValue(Ok([])),
       },
     }
     const wrapper = shallowMount(UserDetail, {
       props: {
-        albumId: null,
+        albumId: undefined,
         deps,
         userId: user.id,
       },

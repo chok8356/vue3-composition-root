@@ -13,7 +13,7 @@ export const getUsersFactory = (
     try {
       const { body, status } = await getUsersApiClient()
       if (status === 200 && body) {
-        return Ok(body.map(mapUserDtoToUserList))
+        return Ok(body.map((x) => mapUserDtoToUserList(x)))
       }
       return Err('Server error')
     } catch (error) {

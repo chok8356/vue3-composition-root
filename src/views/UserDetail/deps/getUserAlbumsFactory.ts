@@ -12,7 +12,7 @@ export const getUserAlbumsFactory = (
     try {
       const { body, status } = await getUserAlbumsApiClient({ userId })
       if (status === 200 && body) {
-        return Ok(body.map(mapUserAlbumDtoToUserAlbum))
+        return Ok(body.map((x) => mapUserAlbumDtoToUserAlbum(x)))
       }
       return Err('Server error')
     } catch (error) {

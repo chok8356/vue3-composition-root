@@ -1,5 +1,11 @@
+export type FetchClient = <TResponse>(request: Request) => Promise<FetchResponse<TResponse>>
+
+export type FetchResponse<TResponse = any> = {
+  body: TResponse
+  status: number
+}
+
 export type Request = {
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   body?: any
   headers?: Record<string, string>
   method: 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT'
@@ -7,27 +13,19 @@ export type Request = {
   query?: string
 }
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type FetchResponse<TResponse = any> = {
-  body: TResponse
-  status: number
-}
-
-export type FetchClient = <TResponse>(req: Request) => Promise<FetchResponse<TResponse>>
-
 export const fetchClient: FetchClient = async <TResponse>(
-  req: Request,
+  request: Request,
 ): Promise<FetchResponse<TResponse>> => {
-  const { path, query } = req
+  const { path, query } = request
   const url = query ? `${path}?${query}` : path
 
   const response = await fetch(url, {
-    body: req.body ? JSON.stringify(req.body) : undefined,
+    body: request.body ? JSON.stringify(request.body) : undefined,
     headers: {
       'Content-Type': 'application/json',
-      ...req.headers,
+      ...request.headers,
     },
-    method: req.method,
+    method: request.method,
   })
 
   const responseBody: TResponse = await response.json().catch(() => ({}) as TResponse)

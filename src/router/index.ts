@@ -41,8 +41,9 @@ export const initRouter = (deps: AppDeps) =>
         props: (route) => {
           const routeUserId = route.params.userId
           const routeAlbumId = route.params.albumId
-          const userId = typeof routeUserId === 'string' ? parseInt(routeUserId) : null
-          const albumId = typeof routeAlbumId === 'string' ? parseInt(routeAlbumId) : null
+          const userId = typeof routeUserId === 'string' ? Number.parseInt(routeUserId) : undefined
+          const albumId =
+            typeof routeAlbumId === 'string' ? Number.parseInt(routeAlbumId) : undefined
           return { albumId, deps: deps.UserDetail, userId }
         },
       },

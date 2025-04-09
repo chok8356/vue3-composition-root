@@ -20,7 +20,7 @@
 
         <!--right-->
         <div
-          v-if="albumId && albums.length"
+          v-if="albumId && albums.length > 0"
           :class="$style.contentPart">
           <!--photos-->
           <UserDetailAlbumPhotos
@@ -52,29 +52,23 @@ import UserDetailAlbumPhotos from './components/UserDetailAlbumPhotos/UserDetail
 import UserDetailAlbums from './components/UserDetailAlbums/UserDetailAlbums.vue'
 import UserDetailInfo from './components/UserDetailInfo/UserDetailInfo.vue'
 
-const router = useRouter()
+const properties = defineProps<{
+  albumId: number | undefined
+  deps: UserDetailDeps
+  userId: number | undefined
+}>()
 
-const props = withDefaults(
-  defineProps<{
-    albumId: null | number
-    deps: UserDetailDeps
-    userId: null | number
-  }>(),
-  {
-    albumId: null,
-    userId: null,
-  },
-)
+const router = useRouter()
 
 const loading = ref(true)
 
 // User
 
-const user = ref<IUserDetailInfo | null>(null)
+const user = ref<IUserDetailInfo>()
 
 const fetchUser = async () => {
-  if (props.userId !== null) {
-    await props.deps.getUserDetailInfo(props.userId).then((data) => {
+  if (properties.userId !== undefined) {
+    await properties.deps.getUserDetailInfo(properties.userId).then((data) => {
       data.match({
         err: async () => {},
         ok: async (x) => {
@@ -89,8 +83,8 @@ const fetchUser = async () => {
 const albums = ref<IUserAlbum[]>([])
 
 const fetchAlbums = async () => {
-  if (props.userId !== null) {
-    await props.deps.getUserAlbums(props.userId).then((data) => {
+  if (properties.userId !== undefined) {
+    await properties.deps.getUserAlbums(properties.userId).then((data) => {
       data.match({
         err: async () => {},
         ok: async (x) => {
@@ -106,12 +100,12 @@ const availableAlbumIds = computed<number[]>(() => {
 })
 
 const onCloseAlbum = () => {
-  router.push({ name: 'UserDetail', params: { userId: props.userId } })
+  router.push({ name: 'UserDetail', params: { userId: properties.userId } })
 }
 
 // Fetch User and Album
 const fetchData = async () => {
-  if (props.userId !== null) {
+  if (properties.userId !== null) {
     loading.value = true
     await Promise.all([fetchUser(), fetchAlbums()])
     loading.value = false
@@ -119,7 +113,7 @@ const fetchData = async () => {
 }
 
 watch(
-  () => props.userId,
+  () => properties.userId,
   () => fetchData(),
   { immediate: true },
 )

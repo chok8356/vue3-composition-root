@@ -48,10 +48,8 @@ body {
 }
 
 .scrollbar {
-  @document url-prefix() {
-    scrollbar-color: #dee1ea transparent !important;
-    scrollbar-width: thin !important;
-  }
+  scrollbar-color: #dee1ea transparent !important;
+  scrollbar-width: thin !important;
 
   &::-webkit-scrollbar {
     height: 4px !important;

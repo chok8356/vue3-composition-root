@@ -19,9 +19,9 @@ describe('UserDetailAlbums.vue', () => {
     })
     const albumElements = wrapper.findAll('[data-test="album"]')
     expect(albumElements.length).toBe(mockAlbums.length)
-    albumElements.forEach((albumElement, index) => {
+    for (const [index, albumElement] of albumElements.entries()) {
       expect(albumElement.text()).toBe(mockAlbums[index].title)
-    })
+    }
     expect(wrapper.find('[data-test="no-albums"]').exists()).toBe(false)
   })
 

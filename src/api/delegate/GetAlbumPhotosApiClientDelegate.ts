@@ -4,5 +4,5 @@ import type {
 } from '@/api/jsonplaceholder/getAlbumPhotos'
 
 export type GetAlbumPhotosApiClientDelegate = (
-  req: GetAlbumPhotosRequest,
+  request: GetAlbumPhotosRequest,
 ) => Promise<GetAlbumPhotosResponse>

@@ -4,7 +4,7 @@ import { fetchClient, type Request } from './fetchClient'
 
 const mockFetch = vi.fn()
 
-global.fetch = mockFetch
+globalThis.fetch = mockFetch
 
 describe('fetchFactory', () => {
   it('should make a request with the correct URL and return a successful response', async () => {

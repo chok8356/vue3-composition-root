@@ -5,19 +5,19 @@ export type GetUserAlbumsRequest = {
   userId: number
 }
 
+export type GetUserAlbumsResponse = GetUserAlbumsResponse200
+
 export type GetUserAlbumsResponse200 = {
   body: AlbumDto[]
   status: 200
 }
 
-export type GetUserAlbumsResponse = GetUserAlbumsResponse200
-
 export const getUserAlbums =
   (fetchClient: FetchClient) =>
-  async (req: GetUserAlbumsRequest): Promise<GetUserAlbumsResponse> => {
+  async (request: GetUserAlbumsRequest): Promise<GetUserAlbumsResponse> => {
     const { body, status } = await fetchClient<GetUserAlbumsResponse['body']>({
       method: 'GET',
-      path: `https://jsonplaceholder.typicode.com/users/${req.userId}/albums`,
+      path: `https://jsonplaceholder.typicode.com/users/${request.userId}/albums`,
     })
 
     if (status === 200) {

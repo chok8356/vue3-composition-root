@@ -12,7 +12,7 @@ export const getAlbumPhotosFactory = (
     try {
       const { body, status } = await getAlbumPhotosApiClient({ albumId, limit: 12, page })
       if (status === 200 && body) {
-        return Ok(body.map(mapAlbumPhotoDtoToAlbumPhoto))
+        return Ok(body.map((x) => mapAlbumPhotoDtoToAlbumPhoto(x)))
       }
       return Err('Server error')
     } catch (error) {

@@ -7,7 +7,7 @@ import UserDetailInfo from '../UserDetailInfo.vue'
 
 const mockUser: IUserDetailInfo = {
   email: 'john.doe@example.com',
-  id: 12345,
+  id: 12_345,
   name: 'John Doe',
   phone: '+1234567890',
 }

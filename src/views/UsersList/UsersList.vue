@@ -20,7 +20,7 @@ import { RouterLink } from 'vue-router'
 
 import type { IUser } from './types/IUser'
 
-const props = defineProps<{
+const properties = defineProps<{
   deps: UsersListDeps
 }>()
 
@@ -29,7 +29,7 @@ const users = ref<IUser[]>([])
 const error = ref('')
 
 onMounted(async () => {
-  await props.deps.getUsers().then((data) => {
+  await properties.deps.getUsers().then((data) => {
     data.match({
       err: async (x) => {
         error.value = x

@@ -2,7 +2,7 @@
   <div :class="$style.root">
     <h2>Albums</h2>
     <div
-      v-if="albums.length"
+      v-if="albums.length > 0"
       :class="$style.albums">
       <RouterLink
         v-for="album in albums"

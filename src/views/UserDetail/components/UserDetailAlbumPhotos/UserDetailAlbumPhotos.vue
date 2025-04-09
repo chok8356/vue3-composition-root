@@ -8,7 +8,7 @@
     </div>
     <template v-else>
       <div
-        v-if="photos.length"
+        v-if="photos.length > 0"
         :class="$style.photosWrapper">
         <div
           class="scrollbar"
@@ -52,20 +52,14 @@ import { ref, watch } from 'vue'
 
 import type { IAlbumPhoto } from './types/IAlbumPhoto'
 
-const props = withDefaults(
-  defineProps<{
-    albumId: null | number
-    availableAlbumIds: IUserAlbum['id'][]
-    deps: UserDetailAlbumPhotosDeps
-  }>(),
-  {
-    albumId: null,
-    availableAlbumIds: () => [],
-  },
-)
+const properties = defineProps<{
+  albumId: null | number
+  availableAlbumIds: IUserAlbum['id'][]
+  deps: UserDetailAlbumPhotosDeps
+}>()
 
 const emit = defineEmits<{
-  (e: 'close'): void
+  (event: 'close'): void
 }>()
 
 const loadingPhotos = ref(true)
@@ -73,9 +67,9 @@ const photos = ref<IAlbumPhoto[]>([])
 const page = ref(1)
 
 const fetchAlbumData = async () => {
-  if (props.albumId !== null && props.availableAlbumIds.includes(props.albumId)) {
+  if (properties.albumId !== null && properties.availableAlbumIds.includes(properties.albumId)) {
     loadingPhotos.value = true
-    await props.deps.getAlbumPhotos(props.albumId, page.value).then((data) => {
+    await properties.deps.getAlbumPhotos(properties.albumId, page.value).then((data) => {
       data.match({
         err: async () => {},
         ok: async (x) => {
@@ -90,14 +84,14 @@ const fetchAlbumData = async () => {
 // Loading more
 const loadingPhotosMore = ref(false)
 const fetchAlbumDataMore = async () => {
-  if (props.albumId !== null && !loadingPhotosMore.value) {
+  if (properties.albumId !== null && !loadingPhotosMore.value) {
     loadingPhotosMore.value = true
     page.value += 1
-    await props.deps.getAlbumPhotos(props.albumId, page.value).then((data) => {
+    await properties.deps.getAlbumPhotos(properties.albumId, page.value).then((data) => {
       data.match({
         err: async () => {},
         ok: async (x) => {
-          photos.value = photos.value.concat(x)
+          photos.value = [...photos.value, ...x]
         },
       })
     })
@@ -106,7 +100,7 @@ const fetchAlbumDataMore = async () => {
 }
 
 watch(
-  () => props.albumId,
+  () => properties.albumId,
   () => fetchAlbumData(),
   { immediate: true },
 )

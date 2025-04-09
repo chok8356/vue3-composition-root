@@ -17,7 +17,7 @@
 withDefaults(
   defineProps<{
     disabled?: boolean
-    text: string
+    text?: string
     type?: 'primary' | 'secondary'
   }>(),
   {
