@@ -1,11 +1,11 @@
 export type FetchClient = <TResponse>(request: Request) => Promise<FetchResponse<TResponse>>
 
-export type FetchResponse<TResponse = any> = {
+export interface FetchResponse<TResponse = any> {
   body: TResponse
   status: number
 }
 
-export type Request = {
+export interface Request {
   body?: any
   headers?: Record<string, string>
   method: 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT'
@@ -28,7 +28,15 @@ export const fetchClient: FetchClient = async <TResponse>(
     method: request.method,
   })
 
-  const responseBody: TResponse = await response.json().catch(() => ({}) as TResponse)
+  let responseBody: TResponse
+
+  try {
+    responseBody = await response.json() as TResponse
+  }
+  catch (error) {
+    console.error('Failed to parse JSON response:', error)
+    throw new Error(`Failed to parse JSON for request to ${url}: ${error}`)
+  }
 
   return {
     body: responseBody,

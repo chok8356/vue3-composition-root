@@ -9,20 +9,20 @@
       <div
         v-if="user"
         :class="$style.content">
-        <!--left-->
+        <!-- left -->
         <div :class="$style.contentPart">
-          <!--user-->
+          <!-- user -->
           <UserDetailInfo :user="user" />
 
-          <!--albums-->
+          <!-- albums -->
           <UserDetailAlbums :albums="albums" />
         </div>
 
-        <!--right-->
+        <!-- right -->
         <div
           v-if="albumId && albums.length > 0"
           :class="$style.contentPart">
-          <!--photos-->
+          <!-- photos -->
           <UserDetailAlbumPhotos
             :album-id="albumId"
             :available-album-ids="availableAlbumIds"
@@ -66,7 +66,7 @@ const loading = ref(true)
 
 const user = ref<IUserDetailInfo>()
 
-const fetchUser = async () => {
+async function fetchUser() {
   if (properties.userId !== undefined) {
     await properties.deps.getUserDetailInfo(properties.userId).then((data) => {
       data.match({
@@ -82,7 +82,7 @@ const fetchUser = async () => {
 // Album
 const albums = ref<IUserAlbum[]>([])
 
-const fetchAlbums = async () => {
+async function fetchAlbums() {
   if (properties.userId !== undefined) {
     await properties.deps.getUserAlbums(properties.userId).then((data) => {
       data.match({
@@ -96,20 +96,20 @@ const fetchAlbums = async () => {
 }
 
 const availableAlbumIds = computed<number[]>(() => {
-  return albums.value.map((x) => x.id)
+  return albums.value.map(x => x.id)
 })
 
-const onCloseAlbum = () => {
-  router.push({ name: 'UserDetail', params: { userId: properties.userId } })
-}
-
 // Fetch User and Album
-const fetchData = async () => {
+async function fetchData() {
   if (properties.userId !== null) {
     loading.value = true
     await Promise.all([fetchUser(), fetchAlbums()])
     loading.value = false
   }
+}
+
+function onCloseAlbum() {
+  router.push({ name: 'UserDetail', params: { userId: properties.userId } })
 }
 
 watch(

@@ -3,7 +3,7 @@ import { defineConfig, mergeConfig } from 'vitest/config'
 
 import viteConfig from './vite.config'
 
-export default defineConfig((configEnvironment) =>
+export default defineConfig(configEnvironment =>
   mergeConfig(viteConfig(configEnvironment), {
     test: {
       clearMocks: true,
@@ -23,7 +23,7 @@ export default defineConfig((configEnvironment) =>
           classNameStrategy: 'non-scoped',
         },
       },
-      environment: 'jsdom',
+      environment: 'happy-dom',
       globals: true,
       include: ['./src/**/*.spec.ts'],
       root: fileURLToPath(new URL('./', import.meta.url)),

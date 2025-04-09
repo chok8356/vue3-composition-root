@@ -66,7 +66,7 @@ const loadingPhotos = ref(true)
 const photos = ref<IAlbumPhoto[]>([])
 const page = ref(1)
 
-const fetchAlbumData = async () => {
+async function fetchAlbumData() {
   if (properties.albumId !== null && properties.availableAlbumIds.includes(properties.albumId)) {
     loadingPhotos.value = true
     await properties.deps.getAlbumPhotos(properties.albumId, page.value).then((data) => {
@@ -83,7 +83,7 @@ const fetchAlbumData = async () => {
 
 // Loading more
 const loadingPhotosMore = ref(false)
-const fetchAlbumDataMore = async () => {
+async function fetchAlbumDataMore() {
   if (properties.albumId !== null && !loadingPhotosMore.value) {
     loadingPhotosMore.value = true
     page.value += 1

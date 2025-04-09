@@ -2,8 +2,8 @@ import { appDeps } from '@/AppDeps'
 import { createApp } from 'vue'
 
 import App from './App.vue'
-import './assets/main.css'
 import { initRouter } from './router'
+import './assets/main.css'
 
 const app = createApp(App)
 

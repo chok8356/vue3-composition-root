@@ -10,7 +10,7 @@ const mockAlbums: IUserAlbum[] = [
   { id: 2, title: 'Album 2' },
 ]
 
-describe('UserDetailAlbums.vue', () => {
+describe('userDetailAlbums.vue', () => {
   it('renders albums correctly when albums array is not empty', () => {
     const wrapper = shallowMount(UserDetailAlbums, {
       props: {

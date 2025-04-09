@@ -12,7 +12,7 @@ const mockUser: IUserDetailInfo = {
   phone: '+1234567890',
 }
 
-describe('UserDetailInfo.vue', () => {
+describe('userDetailInfo.vue', () => {
   it('renders user information correctly', () => {
     const wrapper = shallowMount(UserDetailInfo, {
       props: {

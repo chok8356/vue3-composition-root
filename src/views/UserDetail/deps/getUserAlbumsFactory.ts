@@ -5,25 +5,22 @@ import type { UserDetailDeps } from '@/views/UserDetail/UserDetailDeps'
 
 import { Err, Ok } from '@thames/monads'
 
-export const getUserAlbumsFactory = (
-  getUserAlbumsApiClient: GetUserAlbumsApiClientDelegate,
-): UserDetailDeps['getUserAlbums'] => {
+export function getUserAlbumsFactory(getUserAlbumsApiClient: GetUserAlbumsApiClientDelegate): UserDetailDeps['getUserAlbums'] {
   return async (userId: number) => {
     try {
       const { body, status } = await getUserAlbumsApiClient({ userId })
       if (status === 200 && body) {
-        return Ok(body.map((x) => mapUserAlbumDtoToUserAlbum(x)))
+        return Ok(body.map(x => mapUserAlbumDtoToUserAlbum(x)))
       }
       return Err('Server error')
-    } catch (error) {
+    }
+    catch (error) {
       return Err(`${error}`)
     }
   }
 }
 
-const mapUserAlbumDtoToUserAlbum = (
-  userAlbumDto: GetUserAlbumsResponse200['body'][number],
-): IUserAlbum => {
+function mapUserAlbumDtoToUserAlbum(userAlbumDto: GetUserAlbumsResponse200['body'][number]): IUserAlbum {
   return {
     id: userAlbumDto.id,
     title: userAlbumDto.title,

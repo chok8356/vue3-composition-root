@@ -1,7 +1,10 @@
-import { userDetailDeps, type UserDetailDeps } from '@/views/UserDetail/UserDetailDeps'
-import { usersListDeps, type UsersListDeps } from '@/views/UsersList/UsersListDeps'
+import type { UserDetailDeps } from '@/views/UserDetail/UserDetailDeps'
+import type { UsersListDeps } from '@/views/UsersList/UsersListDeps'
 
-export type AppDeps = {
+import { userDetailDeps } from '@/views/UserDetail/UserDetailDeps'
+import { usersListDeps } from '@/views/UsersList/UsersListDeps'
+
+export interface AppDeps {
   UserDetail: UserDetailDeps
   UsersList: UsersListDeps
 }

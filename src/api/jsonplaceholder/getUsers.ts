@@ -3,23 +3,25 @@ import type { UserDto } from '@/api/jsonplaceholder/types/UserDto'
 
 export type GetUsersResponse = GetUsersResponse200
 
-export type GetUsersResponse200 = {
+export interface GetUsersResponse200 {
   body: UserDto[]
   status: 200
 }
 
-export const getUsers = (fetchClient: FetchClient) => async (): Promise<GetUsersResponse> => {
-  const { body, status } = await fetchClient<GetUsersResponse['body']>({
-    method: 'GET',
-    path: 'https://jsonplaceholder.typicode.com/users',
-  })
+export function getUsers(fetchClient: FetchClient) {
+  return async (): Promise<GetUsersResponse> => {
+    const { body, status } = await fetchClient<GetUsersResponse['body']>({
+      method: 'GET',
+      path: 'https://jsonplaceholder.typicode.com/users',
+    })
 
-  if (status === 200) {
-    return {
-      body: body,
-      status: 200,
+    if (status === 200) {
+      return {
+        body,
+        status: 200,
+      }
     }
-  }
 
-  throw new Error('Unknown response')
+    throw new Error('Unknown response')
+  }
 }

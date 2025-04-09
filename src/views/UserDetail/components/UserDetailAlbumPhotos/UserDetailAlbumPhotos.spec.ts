@@ -16,7 +16,7 @@ const photos: IAlbumPhoto[] = [
   { id: 202, thumbnailUrl: 'url2', title: 'Photo 2', url: 'url2' },
 ]
 
-describe('UserDetailAlbumPhotos.vue', () => {
+describe('userDetailAlbumPhotos.vue', () => {
   it('displays photos if present in selected album', async () => {
     const deps: UserDetailAlbumPhotosDeps = {
       getAlbumPhotos: vi.fn().mockResolvedValue(Ok(photos)),

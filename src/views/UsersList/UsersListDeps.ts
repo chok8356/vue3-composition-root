@@ -5,7 +5,7 @@ import { fetchClient } from '@/api/fetchClient'
 import { jsonPlaceholderApiClient } from '@/api/jsonplaceholder/jsonPlaceholderApiClient'
 import { getUsersFactory } from '@/views/UsersList/deps/getUsersFactory'
 
-export type UsersListDeps = {
+export interface UsersListDeps {
   getUsers: () => Promise<Result<IUser[], string>>
 }
 

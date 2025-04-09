@@ -1,4 +1,4 @@
-export type AlbumPhotoDto = {
+export interface AlbumPhotoDto {
   albumId: number
   id: number
   thumbnailUrl: string

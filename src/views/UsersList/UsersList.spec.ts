@@ -17,7 +17,7 @@ const deps: UsersListDeps = {
   getUsers: vi.fn().mockResolvedValue(Ok(users)),
 }
 
-describe('UsersList.vue', () => {
+describe('usersList.vue', () => {
   it('fetches users list and displays them correctly', async () => {
     const wrapper = shallowMount(UsersList, {
       props: {

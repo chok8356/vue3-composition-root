@@ -32,7 +32,7 @@ const albums: IUserAlbum[] = [
   { id: 102, title: 'Album 2' },
 ]
 
-describe('UserDetail.vue', () => {
+describe('userDetail.vue', () => {
   it('request on mounted', () => {
     const deps: UserDetailDeps = {
       getUserAlbums: vi.fn().mockResolvedValue(Ok([])),

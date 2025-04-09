@@ -5,25 +5,22 @@ import type { UserDetailAlbumPhotosDeps } from '@/views/UserDetail/components/Us
 
 import { Err, Ok } from '@thames/monads'
 
-export const getAlbumPhotosFactory = (
-  getAlbumPhotosApiClient: GetAlbumPhotosApiClientDelegate,
-): UserDetailAlbumPhotosDeps['getAlbumPhotos'] => {
+export function getAlbumPhotosFactory(getAlbumPhotosApiClient: GetAlbumPhotosApiClientDelegate): UserDetailAlbumPhotosDeps['getAlbumPhotos'] {
   return async (albumId: number, page: number) => {
     try {
       const { body, status } = await getAlbumPhotosApiClient({ albumId, limit: 12, page })
       if (status === 200 && body) {
-        return Ok(body.map((x) => mapAlbumPhotoDtoToAlbumPhoto(x)))
+        return Ok(body.map(x => mapAlbumPhotoDtoToAlbumPhoto(x)))
       }
       return Err('Server error')
-    } catch (error) {
+    }
+    catch (error) {
       return Err(`${error}`)
     }
   }
 }
 
-const mapAlbumPhotoDtoToAlbumPhoto = (
-  albumPhotoDto: GetAlbumPhotosResponse200['body'][number],
-): IAlbumPhoto => {
+function mapAlbumPhotoDtoToAlbumPhoto(albumPhotoDto: GetAlbumPhotosResponse200['body'][number]): IAlbumPhoto {
   return {
     id: albumPhotoDto.id,
     thumbnailUrl: albumPhotoDto.thumbnailUrl,

@@ -1,4 +1,4 @@
-export type UserDto = {
+export interface UserDto {
   address: {
     city: string
     geo: {

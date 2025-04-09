@@ -1,16 +1,26 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { fetchClient, type Request } from './fetchClient'
+import type { FetchResponse, Request } from './fetchClient'
+
+import { fetchClient } from './fetchClient'
 
 const mockFetch = vi.fn()
-
 globalThis.fetch = mockFetch
 
-describe('fetchFactory', () => {
-  it('should make a request with the correct URL and return a successful response', async () => {
+describe('fetchClient', () => {
+  beforeEach(() => {
+    vi.clearAllMocks() // или mockFetch.mockClear()
+  })
+
+  it('should make a GET request with the correct URL, headers and return a successful response', async () => {
+    interface SuccessResponse { success: boolean }
+    const mockJsonResponse: SuccessResponse = { success: true }
+    const mockStatus = 200
+
     mockFetch.mockResolvedValue({
-      json: vi.fn().mockResolvedValue({ success: true }),
-      status: 200,
+      json: vi.fn().mockResolvedValue(mockJsonResponse),
+      ok: true,
+      status: mockStatus,
     })
 
     const request: Request = {
@@ -22,42 +32,76 @@ describe('fetchFactory', () => {
       query: 'id=123',
     }
 
-    const response = await fetchClient(request)
+    const response: FetchResponse<SuccessResponse> = await fetchClient<SuccessResponse>(request)
 
-    expect(mockFetch).toHaveBeenCalledWith(`/test?id=123`, {
+    expect(mockFetch).toHaveBeenCalledTimes(1)
+    expect(mockFetch).toHaveBeenCalledWith('/test?id=123', {
       body: undefined,
       headers: {
-        Authorization: 'Bearer token',
+        'Authorization': 'Bearer token',
         'Content-Type': 'application/json',
       },
       method: 'GET',
     })
 
     expect(response).toEqual({
-      body: { success: true },
-      status: 200,
+      body: mockJsonResponse,
+      status: mockStatus,
     })
   })
 
-  it('should return an error response when fetch fails', async () => {
-    mockFetch.mockRejectedValue(new Error('Network error'))
+  it('should make a POST request with a body and return a successful response', async () => {
+    interface PostData { data: string }
+    interface PostResponse { id: number, message: string }
+
+    const requestBody: PostData = { data: 'test data' }
+    const mockJsonResponse: PostResponse = { id: 1, message: 'Created' }
+    const mockStatus = 201
+
+    mockFetch.mockResolvedValue({
+      json: vi.fn().mockResolvedValue(mockJsonResponse),
+      ok: true,
+      status: mockStatus,
+    })
 
     const request: Request = {
+      body: requestBody,
+      headers: { 'X-Custom': 'value' },
+      method: 'POST',
+      path: '/create',
+    }
+
+    const response = await fetchClient<PostResponse>(request)
+
+    expect(mockFetch).toHaveBeenCalledTimes(1)
+    expect(mockFetch).toHaveBeenCalledWith('/create', {
+      body: JSON.stringify(requestBody),
       headers: {
         'Content-Type': 'application/json',
+        'X-Custom': 'value',
       },
+      method: 'POST',
+    })
+
+    expect(response).toEqual({
+      body: mockJsonResponse,
+      status: mockStatus,
+    })
+  })
+
+  it('should throw an error when fetch itself fails (network error)', async () => {
+    const networkError = new Error('Network error')
+    mockFetch.mockRejectedValue(networkError)
+
+    const request: Request = {
       method: 'POST',
       path: '/error',
-      query: '',
     }
 
-    try {
-      await fetchClient(request)
-    } catch (error) {
-      expect((error as Error).message).toBe('Network error')
-    }
+    await expect(fetchClient(request)).rejects.toThrow(networkError)
 
-    expect(mockFetch).toHaveBeenCalledWith(`/error`, {
+    expect(mockFetch).toHaveBeenCalledTimes(1)
+    expect(mockFetch).toHaveBeenCalledWith('/error', {
       body: undefined,
       headers: {
         'Content-Type': 'application/json',
@@ -66,53 +110,55 @@ describe('fetchFactory', () => {
     })
   })
 
-  it('should return empty body when response body cannot be parsed as JSON', async () => {
+  it('should throw an error when response body cannot be parsed as JSON', async () => {
+    const jsonParseError = new Error('Invalid JSON')
+    const mockStatus = 200
+
     mockFetch.mockResolvedValue({
-      json: vi.fn().mockRejectedValue(new Error('Invalid JSON')),
-      status: 200,
+      json: vi.fn().mockRejectedValue(jsonParseError),
+      ok: true,
+      status: mockStatus,
     })
 
     const request: Request = {
-      headers: {},
       method: 'GET',
       path: '/invalid-json',
-      query: '',
     }
 
-    const response = await fetchClient(request)
+    await expect(fetchClient(request)).rejects.toThrow(
+      `Failed to parse JSON for request to /invalid-json: ${jsonParseError}`,
+    )
 
-    expect(response).toEqual({
-      body: {},
-      status: 200,
+    expect(mockFetch).toHaveBeenCalledTimes(1)
+    expect(mockFetch).toHaveBeenCalledWith('/invalid-json', {
+      body: undefined,
+      headers: { 'Content-Type': 'application/json' },
+      method: 'GET',
     })
   })
 
   it('should include query parameters in the URL when present', async () => {
     mockFetch.mockResolvedValue({
       json: vi.fn().mockResolvedValue({ data: 'some-data' }),
+      ok: true,
       status: 200,
     })
 
     const request: Request = {
-      headers: {},
       method: 'GET',
       path: '/data',
-      query: 'filter=active',
+      query: 'filter=active&sort=asc',
     }
 
-    const response = await fetchClient(request)
+    await fetchClient(request)
 
-    expect(mockFetch).toHaveBeenCalledWith(`/data?filter=active`, {
+    expect(mockFetch).toHaveBeenCalledTimes(1)
+    expect(mockFetch).toHaveBeenCalledWith('/data?filter=active&sort=asc', {
       body: undefined,
       headers: {
         'Content-Type': 'application/json',
       },
       method: 'GET',
-    })
-
-    expect(response).toEqual({
-      body: { data: 'some-data' },
-      status: 200,
     })
   })
 })

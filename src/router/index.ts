@@ -1,8 +1,9 @@
-import { type AppDeps } from '@/AppDeps'
+import type { AppDeps } from '@/AppDeps'
+
 import { createRouter, createWebHashHistory } from 'vue-router'
 
-export const initRouter = (deps: AppDeps) =>
-  createRouter({
+export function initRouter(deps: AppDeps) {
+  return createRouter({
     history: createWebHashHistory(import.meta.env.BASE_URL),
     routes: [
       {
@@ -42,10 +43,11 @@ export const initRouter = (deps: AppDeps) =>
           const routeUserId = route.params.userId
           const routeAlbumId = route.params.albumId
           const userId = typeof routeUserId === 'string' ? Number.parseInt(routeUserId) : undefined
-          const albumId =
-            typeof routeAlbumId === 'string' ? Number.parseInt(routeAlbumId) : undefined
+          const albumId
+            = typeof routeAlbumId === 'string' ? Number.parseInt(routeAlbumId) : undefined
           return { albumId, deps: deps.UserDetail, userId }
         },
       },
     ],
   })
+}

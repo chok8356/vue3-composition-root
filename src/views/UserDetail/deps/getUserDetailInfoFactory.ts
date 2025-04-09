@@ -6,9 +6,7 @@ import { Err, Ok } from '@thames/monads'
 
 import type { IUserDetailInfo } from '../types/IUserDetailInfo'
 
-export const getUserDetailInfoFactory = (
-  getUserApiClient: GetUserApiClientDelegate,
-): UserDetailDeps['getUserDetailInfo'] => {
+export function getUserDetailInfoFactory(getUserApiClient: GetUserApiClientDelegate): UserDetailDeps['getUserDetailInfo'] {
   return async (userId: number) => {
     try {
       const { body, status } = await getUserApiClient({ userId })
@@ -16,13 +14,14 @@ export const getUserDetailInfoFactory = (
         return Ok(mapUserDtoToUserDetail(body))
       }
       return Err('Server error')
-    } catch (error) {
+    }
+    catch (error) {
       return Err(`${error}`)
     }
   }
 }
 
-const mapUserDtoToUserDetail = (user: GetUserResponse200['body']): IUserDetailInfo => {
+function mapUserDtoToUserDetail(user: GetUserResponse200['body']): IUserDetailInfo {
   return {
     email: user.email,
     id: user.id,

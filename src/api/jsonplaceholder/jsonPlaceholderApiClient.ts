@@ -5,7 +5,7 @@ import { getUser } from '@/api/jsonplaceholder/getUser'
 import { getUserAlbums } from '@/api/jsonplaceholder/getUserAlbums'
 import { getUsers } from '@/api/jsonplaceholder/getUsers'
 
-export const jsonPlaceholderApiClient = (fetchClient: FetchClient) => {
+export function jsonPlaceholderApiClient(fetchClient: FetchClient) {
   return {
     getAlbumPhotos: getAlbumPhotos(fetchClient),
     getUser: getUser(fetchClient),

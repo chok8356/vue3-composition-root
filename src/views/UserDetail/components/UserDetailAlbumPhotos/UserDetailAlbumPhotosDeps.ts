@@ -5,7 +5,7 @@ import { fetchClient } from '@/api/fetchClient'
 import { jsonPlaceholderApiClient } from '@/api/jsonplaceholder/jsonPlaceholderApiClient'
 import { getAlbumPhotosFactory } from '@/views/UserDetail/components/UserDetailAlbumPhotos/deps/getAlbumPhotosFactory'
 
-export type UserDetailAlbumPhotosDeps = {
+export interface UserDetailAlbumPhotosDeps {
   getAlbumPhotos: (albumId: number, page: number) => Promise<Result<IAlbumPhoto[], string>>
 }
 
